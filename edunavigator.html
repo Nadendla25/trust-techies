@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Academic Learning Platform</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef2ff;padding:20px;}
+.container{width:750px;margin:auto;background:white;padding:20px;border-radius:10px;box-shadow:0 0 15px gray;}
+h1{text-align:center;}
+select,input,button{padding:10px;margin:5px 0;width:100%;}
+button{background:#007bff;color:white;border:none;cursor:pointer;}
+button:hover{background:#0056b3;}
+.card{background:#f8f9fa;padding:15px;margin:10px 0;border-radius:8px;}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>🎓 EDUNAVIGATOR</h1>
+
+<!-- LOGIN/REGISTER -->
+<div id="loginDiv">
+<h3>Login / Register</h3>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+<p id="msg"></p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="hidden">
+<h3>Select Subject</h3>
+<select id="subject">
+<option value="">--Select--</option>
+<option value="python">Python</option>
+<option value="ai">AI</option>
+<option value="ml">ML</option>
+<option value="nlp">NLP</option>
+<option value="cv">CV</option>
+</select>
+
+<h3>Select Level</h3>
+<select id="level">
+<option value="">--Select--</option>
+<option value="beginner">Beginner</option>
+<option value="intermediate">Intermediate</option>
+<option value="advanced">Advanced</option>
+</select>
+
+<button onclick="loadTopics()">Load Topics</button>
+
+<div id="topics"></div>
+</div>
+
+<script>
+// ---------- LOGIN/REGISTER ----------
+function register(){
+  let email=document.getElementById("email").value;
+  let pass=document.getElementById("password").value;
+  if(!email||!pass){alert("Fill all fields");return;}
+  localStorage.setItem(email,pass);
+  alert("Registered Successfully!");
+}
+
+function login(){
+  let email=document.getElementById("email").value;
+  let pass=document.getElementById("password").value;
+  if(localStorage.getItem(email)===pass){
+    document.getElementById("loginDiv").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+  }else{
+    document.getElementById("msg").innerText="Invalid Credentials";
+  }
+}
+
+// ---------- ACADEMIC DATA ----------
+const data = {
+ python:{
+   beginner:{
+     "Variables & Data Types": {
+       notes:["https://www.w3schools.com/python/python_variables.asp"],
+       video:["https://www.youtube.com/watch?v=rfscVS0vtbw"],
+       ppt:["https://www.slideshare.net/search?q=python+variables"],
+       questions:["https://www.geeksforgeeks.org/python-programming-examples/"]
+     },
+     "Loops": {
+       notes:["https://www.w3schools.com/python/python_for_loops.asp"],
+       video:["https://www.youtube.com/watch?v=6iF8Xb7Z3wQ"],
+       ppt:["https://www.slideshare.net/search?q=python+loops"],
+       questions:["https://www.geeksforgeeks.org/python-loop-examples/"]
+     }
+   },
+   intermediate:{
+     "OOP":{
+       notes:["https://www.w3schools.com/python/python_classes.asp"],
+       video:["https://www.youtube.com/watch?v=JeznW_7DlB0"],
+       ppt:["https://www.slideshare.net/search?q=python+oop"],
+       questions:["https://www.geeksforgeeks.org/python-oops-examples/"]
+     }
+   },
+   advanced:{
+     "Decorators":{
+       notes:["https://www.geeksforgeeks.org/python-decorators/"],
+       video:["https://www.youtube.com/watch?v=FsAPt_9Bf3U"],
+       ppt:["https://www.slideshare.net/search?q=python+decorators"],
+       questions:["https://www.geeksforgeeks.org/python-interview-questions/"]
+     }
+   }
+ },
+ ai:{
+   beginner:{
+     "Intro to AI":{
+       notes:["https://www.ibm.com/topics/artificial-intelligence"],
+       video:["https://www.youtube.com/watch?v=JMUxmLyrhSk"],
+       ppt:["https://www.slideshare.net/search?q=artificial+intelligence+basics"],
+       questions:["https://www.geeksforgeeks.org/ai-interview-questions/"]
+     }
+   },
+   intermediate:{
+     "AI Algorithms":{
+       notes:["https://www.geeksforgeeks.org/ai-ml/"],
+       video:["https://www.youtube.com/watch?v=Gv9_4yMHFhI"],
+       ppt:["https://www.slideshare.net/search?q=ai+algorithms"],
+       questions:["https://www.geeksforgeeks.org/artificial-intelligence-questions/"]
+     }
+   },
+   advanced:{
+     "Deep Learning":{
+       notes:["https://www.geeksforgeeks.org/deep-learning/"],
+       video:["https://www.youtube.com/watch?v=aircAruvnKk"],
+       ppt:["https://www.slideshare.net/search?q=deep+learning"],
+       questions:["https://www.geeksforgeeks.org/deep-learning-interview-questions/"]
+     }
+   }
+ },
+ ml:{
+   beginner:{
+     "Intro to ML":{
+       notes:["https://www.coursera.org/articles/what-is-machine-learning"],
+       video:["https://www.youtube.com/watch?v=GwIo3gDZCVQ"],
+       ppt:["https://www.slideshare.net/search?q=machine+learning+basics"],
+       questions:["https://www.geeksforgeeks.org/machine-learning-interview-questions/"]
+     }
+   }
+ },
+ nlp:{
+   beginner:{
+     "Intro to NLP":{
+       notes:["https://www.ibm.com/topics/natural-language-processing"],
+       video:["https://www.youtube.com/watch?v=8rXD5-xhemo"],
+       ppt:["https://www.slideshare.net/search?q=nlp+basics"],
+       questions:["https://www.geeksforgeeks.org/nlp-interview-questions/"]
+     }
+   }
+ },
+ cv:{
+   beginner:{
+     "Intro to CV":{
+       notes:["https://www.ibm.com/topics/computer-vision"],
+       video:["https://www.youtube.com/watch?v=Jj4d4XbV2Cw"],
+       ppt:["https://www.slideshare.net/search?q=computer+vision+basics"],
+       questions:["https://www.geeksforgeeks.org/cv-interview-questions/"]
+     }
+   }
+ }
+};
+
+// ---------- LOAD TOPICS ----------
+function loadTopics(){
+  const subject=document.getElementById("subject").value;
+  const level=document.getElementById("level").value;
+  const container=document.getElementById("topics");
+  container.innerHTML="";
+  container.classList.remove("hidden");
+
+  if(!subject||!level){alert("Select Subject and Level"); return;}
+  const topics=data[subject][level];
+  if(!topics){container.innerHTML="<p>No content available.</p>"; return;}
+
+  // Back button
+  let backBtn=document.createElement("button");
+  backBtn.innerText="⬅ Back to Level Selection";
+  backBtn.onclick=()=>{container.innerHTML="";};
+  container.appendChild(backBtn);
+
+  for(let topic in topics){
+    let card=document.createElement("div");
+    card.className="card";
+    let res = topics[topic];
+
+    card.innerHTML=`<h3>${topic}</h3>`;
+    for(let type in res){
+      res[type].forEach(link=>{
+        let btn=document.createElement("button");
+        btn.innerText=type.charAt(0).toUpperCase() + type.slice(1);
+        btn.onclick=()=>window.open(link,"_blank");
+        card.appendChild(btn);
+      });
+    }
+
+    container.appendChild(card);
+  }
+}
+</script>
+
+</body>
+</html>
